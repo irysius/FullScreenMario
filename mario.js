@@ -3,6 +3,8 @@
 
 function FullScreenMario() {
   var time_start = Date.now();
+
+  gamepadSupport.init();
   
   // Thanks, Obama...
   ensureLocalStorage();

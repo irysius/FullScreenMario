@@ -1,10 +1,87 @@
 /* Upkeep.js */
 // Contains functions associated with the upkeep
 
+var prevLeft = false;
+var prevRight = false;
+var prevCrouch = false;
+var prevJump = false;
+var prevSprint = false;
+
 function upkeep() {
   if(window.paused) return;
   // window.nextupk = requestAnimationFrame(upkeep);
   window.nextupk = setTimeout(upkeep, timer);
+
+  if (gamepadSupport.available){
+      gamepadSupport.tick();
+      var xleft = gamepadSupport.xboxControllerState.BTN_LEFT || gamepadSupport.xboxControllerState.STICK_LEFT_X < -0.5;
+      var xright = gamepadSupport.xboxControllerState.BTN_RIGHT || gamepadSupport.xboxControllerState.STICK_LEFT_X > 0.5;
+      //var xjump = gamepadSupport.xboxControllerState.BTN_B || gamepadSupport.xboxControllerState.BTN_X;
+      var xjump = gamepadSupport.xboxControllerState.BTN_A;
+      var xcrouch = gamepadSupport.xboxControllerState.TRIGGER_LEFT > 0.5 || gamepadSupport.xboxControllerState.STICK_LEFT_Y > 0.5 || gamepadSupport.xboxControllerState.BTN_DOWN;
+      //var xsprint = gamepadSupport.xboxControllerState.TRIGGER_RIGHT > 0.5 || gamepadSupport.xboxControllerState.BTN_A;
+      var xsprint = gamepadSupport.xboxControllerState.TRIGGER_RIGHT > 0.5 || gamepadSupport.xboxControllerState.BTN_B;
+      // something weird about the update loop is preventing me from pausing correctly.
+      //var xpause = gamepadSupport.xboxControllerState.BTN_START;
+
+      if (xjump && !prevJump){
+          prevJump = true;
+          keydown(38);
+      }
+      if (!xjump && prevJump){
+          prevJump = false;
+          keyup(38);
+      }
+
+      if (xcrouch && !prevCrouch){
+          prevCrouch = true;
+          keydown(40);
+      }
+      if (!xcrouch && prevCrouch){
+          prevCrouch = false;
+          keyup(40);
+      }
+
+      
+      if (xleft && !prevLeft) {
+          prevLeft = true;
+          keydown(37);
+      }
+      if (!xleft && prevLeft) {
+          prevLeft = false;
+          keyup(37);
+      }
+
+      if (xright && !prevRight) {
+          prevRight = true;
+          keydown(39);
+      }
+      if (!xright && prevRight) {
+          prevRight = false;
+          keyup(39);
+      }
+
+
+      if (xsprint && !prevSprint) {
+          prevSprint = true;
+          keydown(16);
+      }
+      if (!xsprint && prevSprint) {
+          prevSprint = false;
+          keyup(16);
+      }
+
+      //if (xpause && !prevPause){
+      //    prevPause = true;
+      //    console.log('pause down');
+      //    keydown(80);
+      //}
+      //if (!xpause && prevPause){
+      //    prevPause = false;
+      //    console.log('pause up');
+      //    keyup(80);
+      //}
+  }
   
   // Adjust for differences in performance
   adjustFPS();
